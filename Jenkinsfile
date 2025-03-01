@@ -30,13 +30,27 @@ pipeline {
             }
         }
         stage('Run Tests') {
-            steps {
-                sh """
-                    echo "Running frontend tests..."
-                    python3 -m pytest --junit-xml=reports/frontend-junit.xml \
-                                      --alluredir=allure-results/frontend \
-                                      src/tests/frontend/pages/test_login.py
-                """
+            parallel {
+                stage('Frontend Tests') {
+                    steps {
+                        sh """
+                            echo "Running frontend tests..."
+                            python3 -m pytest --junit-xml=reports/frontend-junit.xml \
+                                              --alluredir=allure-results/frontend \
+                                              src/tests/frontend/pages/test_login.py
+                        """
+                    }
+                }
+                stage('Backend Tests') {
+                    steps {
+                        sh """
+                            echo "Running backend tests..."
+                            python3 -m pytest --junit-xml=reports/backend-junit.xml \
+                                              --alluredir=allure-results/backend \
+                                              src/tests/backend
+                        """
+                    }
+                }
             }
         }
         stage('Generate Allure Reports') {

@@ -38,10 +38,7 @@ pipeline {
                     steps {
                         sh """
                             echo "Running frontend tests..."
-                            python3 -m pytest --browser=${params.BROWSER} \
-                                              --selenium_url=${params.EXECUTOR_ADDRESS} \
-                                              --base_url=${params.APPLICATION_URL} \
-                                              --junit-xml=reports/frontend-junit.xml \
+                            python3 -m pytest --junit-xml=reports/frontend-junit.xml \
                                               --alluredir=allure-results/frontend \
                                               src/tests/frontend
                         """

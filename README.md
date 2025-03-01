@@ -61,9 +61,9 @@ pip install -r requirements.txt.txt
 
 ## Running Tests
 
-Local Execution
+### Local Execution
 
-Frontend Tests
+#### Frontend Tests
 
 To run frontend tests locally, execute the following command:
 
@@ -71,7 +71,7 @@ To run frontend tests locally, execute the following command:
 pytest src/tests/frontend/pages/test_login.py
 ```
 
-Backend Tests
+#### Backend Tests
 
 To run backend tests locally, execute the following command:
 
@@ -79,7 +79,7 @@ To run backend tests locally, execute the following command:
 pytest src/tests/backend/reqres/test_reqres_register_api.py
 ```
 
-Remote Execution with Selenoid
+#### Remote Execution with Selenoid
 
 To run tests remotely using Selenoid, execute the command below:
 

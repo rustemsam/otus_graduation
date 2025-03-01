@@ -15,13 +15,11 @@ pipeline {
                 deleteDir()
             }
         }
-
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/rustemsam/otus_graduation'
             }
         }
-
         stage('Install Dependencies') {
             steps {
                 sh '''
@@ -31,20 +29,16 @@ pipeline {
                 '''
             }
         }
-
         stage('Run Tests') {
-                stage('Frontend Tests') {
-                    steps {
-                        sh """
-                            echo "Running frontend tests..."
-                            python3 -m pytest --junit-xml=reports/frontend-junit.xml \
-                                              --alluredir=allure-results/frontend \
-                                              src/tests/frontend
-                        """
-                    }
-                }
+            steps {
+                sh """
+                    echo "Running frontend tests..."
+                    python3 -m pytest --junit-xml=reports/frontend-junit.xml \
+                                      --alluredir=allure-results/frontend \
+                                      src/tests/frontend
+                """
+            }
         }
-
         stage('Generate Allure Reports') {
             steps {
                 allure includeProperties: false, jdk: '', results: [
@@ -54,7 +48,6 @@ pipeline {
             }
         }
     }
-
     post {
         always {
             archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true

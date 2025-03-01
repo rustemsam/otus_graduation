@@ -32,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('Run Tests in Parallel') {
+        stage('Run Tests') {
             parallel {
                 stage('Frontend Tests') {
                     steps {
@@ -44,6 +44,8 @@ pipeline {
                         """
                     }
                 }
+                // Uncomment or add another stage for backend tests if needed:
+                /*
                 stage('Backend Tests') {
                     steps {
                         sh """
@@ -54,6 +56,7 @@ pipeline {
                         """
                     }
                 }
+                */
             }
         }
 

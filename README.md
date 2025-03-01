@@ -91,7 +91,7 @@ Parameters:
 • --selenium_url: The URL of your Selenoid hub.
 • --remote: A flag indicating that tests should run in a remote environment.
 
-Test Markers
+##  Test Markers
 
 To better organize your tests, custom markers are used:
 • @pytest.mark.positive: Marks tests that verify expected (successful) behavior.
@@ -106,7 +106,7 @@ markers =
     negative: marks tests that verify the system handles error conditions or invalid inputs gracefully.
 ```
 
-Troubleshooting
+## Troubleshooting
 
 If you encounter issues while running tests, please verify the following:
 • The application is accessible via the specified base URL.

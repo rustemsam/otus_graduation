@@ -33,7 +33,6 @@ pipeline {
         }
 
         stage('Run Tests') {
-            parallel {
                 stage('Frontend Tests') {
                     steps {
                         sh """
@@ -44,20 +43,6 @@ pipeline {
                         """
                     }
                 }
-                // Uncomment or add another stage for backend tests if needed:
-                /*
-                stage('Backend Tests') {
-                    steps {
-                        sh """
-                            echo "Running backend tests..."
-                            python3 -m pytest --junit-xml=reports/backend-junit.xml \
-                                              --alluredir=allure-results/backend \
-                                              src/tests/backend
-                        """
-                    }
-                }
-                */
-            }
         }
 
         stage('Generate Allure Reports') {

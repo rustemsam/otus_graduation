@@ -1,7 +1,7 @@
 allure-pytest==2.13.5
 allure-python-commons==2.13.5
-pytest~=8.3.4
-selenium~=4.28.1
-pydantic~=2.10.6
+pytest==8.3.3
+selenium==4.27.1
+pydantic==2.10.5
 faker==36.1.1
 requests~=2.32.3

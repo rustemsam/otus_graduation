@@ -7,7 +7,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'EXECUTOR_ADDRESS', defaultValue: 'http://localhost:4444/wd/hub', description: 'Selenoid executor address')
+        string(name: 'SELENOID_URL', defaultValue: 'http://selenoid:4444/wd/hub', description: 'Selenoid executor URL')
         string(name: 'APPLICATION_URL', defaultValue: 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login', description: 'Application URL')
         string(name: 'BROWSER', defaultValue: 'chrome', description: 'Browser to use')
         string(name: 'THREADS', defaultValue: '1', description: 'Number of threads')
@@ -34,44 +34,44 @@ pipeline {
                 '''
             }
         }
+        // Swap stages so that frontend tests run first.
+        stage('Run Frontend Tests') {
+            steps {
+                script {
+                    def selenoidUrl = params.SELENOID_URL
+                    def appUrl = params.APPLICATION_URL
+                    def browser = params.BROWSER
+                    def browserVersion = params.BROWSER_VERSION
+                    def threads = params.THREADS
+
+                    sh """
+                    echo "Starting frontend tests with the following parameters:"
+                    echo "Selenoid URL: ${selenoidUrl}"
+                    echo "Application URL: ${appUrl}"
+                    echo "Browser: ${browser}"
+                    echo "Browser Version: ${browserVersion}"
+                    echo "Threads: ${threads}"
+
+                    python3 -m pytest --browser=${browser} \
+                                        --remote \
+                                        --selenium_url=${selenoidUrl} \
+                                        --base_url=${appUrl} \
+                                        --vnc \
+                                        --alluredir=allure-results \
+                                        src/tests/frontend/pages/test_pim.py \
+                                        src/tests/frontend/pages/test_login.py
+                    """
+                }
+            }
+        }
         stage('Run Backend Tests') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
                     sh """
                         echo "Running backend tests..."
                         python3 -m pytest --junit-xml=reports/backend-junit.xml \
-                                          --alluredir=alluredir-results/backend \
+                                          --alluredir=allure-results/backend \
                                           src/tests/backend
-                    """
-                }
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                script {
-                    def executor = params.EXECUTOR_ADDRESS
-                    def app_url = params.APPLICATION_URL
-                    def browser = params.BROWSER
-                    def browser_version = params.BROWSER_VERSION
-                    def threads = params.THREADS
-
-                    sh """
-                    echo "Starting tests with the following parameters:"
-                    echo "Executor Address: $executor"
-                    echo "Application URL: $app_url"
-                    echo "Browser: $browser"
-                    echo "Browser Version: $browser_version"
-                    echo "Threads: $threads"
-
-                    python3 -m pytest         --browser=$browser \
-                                      --selenium_url=$executor \
-                                      --base_url=$app_url \
-
-                                              --vnc
-                                              --selenium_url http://selenoid:4444/wd/hub
-                                              --alluredir=allure-results \
-                                      src/tests/frontend/pages/test_pim.py \
-                                      src/tests/frontend/pages/test_login.py
                     """
                 }
             }
@@ -79,18 +79,18 @@ pipeline {
         stage('Generate Allure Reports') {
             steps {
                 allure includeProperties: false, jdk: '', results: [
-                    [path: 'alluredir-results/frontend'],
-                    [path: 'alluredir-results/backend']
+                    [path: 'allure-results/frontend'],
+                    [path: 'allure-results/backend']
                 ]
             }
         }
     }
     post {
         always {
-
+            // Remove extra steps {} here; just list the steps directly.
             allure includeProperties: false, jdk: '', results: [
-                [path: 'alluredir-results/frontend'],
-                [path: 'alluredir-results/backend']
+                [path: 'allure-results/frontend'],
+                [path: 'allure-results/backend']
             ]
             echo "Post actions executed."
         }

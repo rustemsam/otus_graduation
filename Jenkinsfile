@@ -2,10 +2,8 @@ pipeline {
     agent any
 
     options {
-        // Optionally add timestamps to help debug timing issues.
         timestamps()
-        // Set an overall timeout for the entire pipeline, if desired.
-        // timeout(time: 60, unit: 'MINUTES')
+         timeout(time: 10, unit: 'MINUTES')
     }
 
     parameters {
@@ -36,32 +34,29 @@ pipeline {
                 '''
             }
         }
-        stage('Run Tests') {
-            parallel {
-                stage('Frontend Tests') {
-                    steps {
-                        timeout(time: 5, unit: 'MINUTES') {
-                            sh """
-                                echo "Running frontend tests..."
-                                python3 -m pytest --junit-xml=reports/frontend-junit.xml \
-                                                  --alluredir=allure-results/frontend \
-                                                  src/tests/frontend/pages/orm/test_recruitment.py \
-                                                  src/tests/frontend/pages/orm/test_pim.py \
-                            """
-                        }
-                    }
+        stage('Run Backend Tests') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    sh """
+                        echo "Running backend tests..."
+                        python3 -m pytest --junit-xml=reports/backend-junit.xml \
+                                          --alluredir=allure-results/backend \
+                                          src/tests/backend
+                    """
                 }
-                stage('Backend Tests') {
-                    steps {
-                        timeout(time: 5, unit: 'MINUTES') {
-                            sh """
-                                echo "Running backend tests..."
-                                python3 -m pytest --junit-xml=reports/backend-junit.xml \
-                                                  --alluredir=allure-results/backend \
-                                                  src/tests/backend
-                            """
-                        }
-                    }
+            }
+        }
+        stage('Run Frontend Tests') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    sh """
+                        echo "Running frontend tests..."
+                        python3 -m pytest --junit-xml=reports/frontend-junit.xml \
+                                          --alluredir=allure-results/frontend \
+                                          src/tests/frontend/pages/orm/test_recruitment.py \
+                                          src/tests/frontend/pages/orm/test_pim.py \
+                                          src/tests/frontend/pages/test_login.py
+                    """
                 }
             }
         }

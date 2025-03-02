@@ -34,7 +34,6 @@ pipeline {
                 '''
             }
         }
-        // Swap stages so that frontend tests run first.
         stage('Run Frontend Tests') {
             steps {
                 script {
@@ -52,12 +51,13 @@ pipeline {
                     echo "Browser Version: ${browserVersion}"
                     echo "Threads: ${threads}"
 
-                    python3 -m pytest --browser=${browser} \
-                                         --remote \
-                                         --vnc \
-                                         --selenium_url=$executor \
-                                        --alluredir=allure-results/frontend \
-                                        src/tests/frontend/pages/test_pim.py
+                    python3 -m pytest --browser=${browser} \\
+                                       --remote \\
+                                       --vnc \\
+                                       --selenium_url=${selenoidUrl} \\
+                                       --base_url=${appUrl} \\
+                                       --alluredir=allure-results/frontend \\
+                                       src/tests/frontend/pages/test_pim.py
                     """
                 }
             }
@@ -67,8 +67,8 @@ pipeline {
                 timeout(time: 5, unit: 'MINUTES') {
                     sh """
                         echo "Running backend tests..."
-                        python3 -m pytest --junit-xml=reports/backend-junit.xml \
-                                          --alluredir=allure-results/backend \
+                        python3 -m pytest --junit-xml=reports/backend-junit.xml \\
+                                          --alluredir=allure-results/backend \\
                                           src/tests/backend
                     """
                 }
@@ -83,13 +83,13 @@ pipeline {
             }
         }
     }
-     post {
-    always {
-        archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true
-        junit 'reports/**/*.xml'
+    post {
+        always {
+            archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true
+            junit 'reports/**/*.xml'
+        }
+        failure {
+            echo "Build failed! Check logs for errors."
+        }
     }
-    failure {
-        echo "Build failed! Check logs for errors."
-    }
-}
 }

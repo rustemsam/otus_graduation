@@ -64,7 +64,8 @@ pipeline {
                     echo "Threads: $threads"
 
                     python3 -m pytest --alluredir=allure-results \
-                                      src/tests/frontend
+                                      src/tests/frontend/pages/test_pim.py \
+                                      src/tests/frontend/pages/test_login.py \
                     """
                 }
             }

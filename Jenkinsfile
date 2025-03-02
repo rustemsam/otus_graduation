@@ -46,15 +46,29 @@ pipeline {
                 }
             }
         }
-        stage('Run Frontend Tests') {
+       stage('Run Tests') {
             steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    sh """
-                        echo "Running frontend tests..."
-                        python3 -m pytest --junit-xml=reports/frontend-junit.xml \
-                                          --alluredir=allure-results/frontend \
-                                           src/tests/frontend/pages/test_pim.py
+                script {
+                    def executor = params.EXECUTOR_ADDRESS
+                    def app_url = params.APPLICATION_URL
+                    def browser = params.BROWSER
+                    def browser_version = params.BROWSER_VERSION
+                    def threads = params.THREADS
 
+                    sh """
+                    echo "Starting tests with the following parameters:"
+                    echo "Executor Address: $executor"
+                    echo "Application URL: $app_url"
+                    echo "Browser: $browser"
+                    echo "Browser Version: $browser_version"
+                    echo "Threads: $threads"
+
+                    python3 -m pytest --browser=$browser \
+                                      --selenium_url=$executor \
+                                      --base_url=$app_url \
+                                      --junit-xml=reports/junit.xml \
+                                      --alluredir=allure-results \
+                                      src/tests/frontend/pages
                     """
                 }
             }

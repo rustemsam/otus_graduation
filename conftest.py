@@ -1,4 +1,3 @@
-import tempfile
 
 import allure
 import pytest

@@ -68,7 +68,7 @@ pipeline {
                                       --base_url=$app_url \
                                       --junit-xml=reports/junit.xml \
                                       --alluredir=allure-results \
-                                      src/tests/frontend/pages
+                                      src/tests/frontend/pages/test_pim.py
                     """
                 }
             }

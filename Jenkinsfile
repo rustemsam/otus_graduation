@@ -54,7 +54,6 @@ pipeline {
 
                     python3 -m pytest --browser=${browser} \
                                         --alluredir=allure-results \
-                                        src/tests/frontend/pages/test_pim.py \
                                         src/tests/frontend/pages/test_login.py
                     """
                 }

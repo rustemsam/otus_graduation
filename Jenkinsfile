@@ -53,6 +53,9 @@ pipeline {
                     echo "Threads: ${threads}"
 
                     python3 -m pytest --browser=${browser} \
+                                         --remote
+                                         --vnc
+                                         --selenium_url=$executor \
                                         --alluredir=allure-results/frontend \
                                         src/tests/frontend/pages/test_pim.py
                     """

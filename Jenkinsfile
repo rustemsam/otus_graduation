@@ -82,7 +82,7 @@ pipeline {
     }
     post {
         always {
-            // Remove extra steps {} here; just list the steps directly.
+            sh 'rm -f ${WORKSPACE}/allure-report.zip'
             allure includeProperties: false, jdk: '', results: [
                 [path: 'allure-results/frontend'],
                 [path: 'allure-results/backend']

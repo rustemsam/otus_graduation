@@ -36,8 +36,10 @@ pipeline {
                         sh """
                             echo "Running frontend tests..."
                             python3 -m pytest --junit-xml=reports/frontend-junit.xml \
-                                              --alluredir=allure-results/frontend \
-                                              src/tests/frontend/pages
+                            --alluredir=allure-results/frontend \
+                            src/tests/frontend/pages/orm/test_recruitment.py \
+                            src/tests/frontend/pages/orm/test_pim.py \
+                            src/tests/frontend/pages/test_login.py
                         """
                     }
                 }

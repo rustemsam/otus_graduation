@@ -80,14 +80,13 @@ pipeline {
             }
         }
     }
-    post {
+       post {
         always {
-            sh 'rm -f ${WORKSPACE}/allure-report.zip'
-            allure includeProperties: false, jdk: '', results: [
-                [path: 'allure-results/frontend'],
-                [path: 'allure-results/backend']
-            ]
-            echo "Post actions executed."
+            archiveArtifacts artifacts: 'reports/junit.xml', fingerprint: true
+            junit 'reports/junit.xml'
+        }
+        failure {
+            echo "Build failed! Check logs for errors."
         }
     }
 }

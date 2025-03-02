@@ -65,7 +65,8 @@ pipeline {
 
                     python3 -m pytest         --browser chrome \
                                               --remote
-                                              --selenium_url http://selenoid:4444/wd/hub
+                                              --vnc
+                                              --selenium_url http://localhost:4444/wd/hub
                                                 --alluredir=allure-results \
                                       src/tests/frontend/pages/test_pim.py \
                                       src/tests/frontend/pages/test_login.py

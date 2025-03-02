@@ -27,26 +27,6 @@ services:
     command: [ "--selenoid-uri", "http://selenoid:4444", "-listen", ":8090" ]
     restart: always
 
-  tests:
-    container_name: tests
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: [
-      "pytest", "-v", "tests/frontend/pages/test_recruitment.py",
-      "--browser", "chrome",
-      "--remote",
-      "--vnc",
-      "--video",
-      "--selenium_url", "http://selenoid:4444/wd/hub"
-    ]
-    volumes:
-      - ./src/tests:/app/tests
-      - ./wait-for-it.sh:/app/wait-for-it.sh
-      - ./screenshots:/app/screenshots
-      - /opt/selenoid/video:/opt/selenoid/video
-    networks:
-      - selenoid
 
 networks:
   selenoid:

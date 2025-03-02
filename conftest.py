@@ -79,8 +79,6 @@ def browser(request):
     if remote:
         if browser_name == "chrome":
             options = ChromeOptions()
-            unique_dir = tempfile.mkdtemp()
-            options.add_argument(f"--user-data-dir={unique_dir}")
         elif browser_name == "firefox":
             options = FirefoxOptions()
         elif browser_name == "edge":

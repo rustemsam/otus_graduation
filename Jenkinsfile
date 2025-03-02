@@ -63,8 +63,10 @@ pipeline {
                     echo "Browser Version: $browser_version"
                     echo "Threads: $threads"
 
-                    python3 -m pytest         --browser chrome \
-                                              --remote
+                    python3 -m pytest         --browser=$browser \
+                                      --selenium_url=$executor \
+                                      --base_url=$app_url \
+
                                               --vnc
                                               --selenium_url http://selenoid:4444/wd/hub
                                               --alluredir=allure-results \

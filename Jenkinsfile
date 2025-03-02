@@ -53,7 +53,7 @@ pipeline {
                     echo "Threads: ${threads}"
 
                     python3 -m pytest --browser=${browser} \
-                                        --alluredir=allure-results \
+                                        --alluredir=allure-results/frontend \
                                         src/tests/frontend/pages/test_login.py
                     """
                 }
@@ -80,13 +80,13 @@ pipeline {
             }
         }
     }
-       post {
-        always {
-            archiveArtifacts artifacts: 'reports/junit.xml', fingerprint: true
-            junit 'reports/junit.xml'
-        }
-        failure {
-            echo "Build failed! Check logs for errors."
-        }
+     post {
+    always {
+        archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true
+        junit 'reports/**/*.xml'
     }
+    failure {
+        echo "Build failed! Check logs for errors."
+    }
+}
 }

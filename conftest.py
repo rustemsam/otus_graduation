@@ -112,7 +112,7 @@ def browser(request):
         if browser_name == "chrome":
             options = ChromeOptions()
             options.add_argument("--no-sandbox")
-            #options.add_argument("--headless")
+            options.add_argument("--headless=new")
             options.add_argument("--user-data-dir=/tmp/user-data")
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--edge-skip-compat-layer-relaunch")

@@ -78,13 +78,16 @@ pipeline {
             }
         }
     }
-    post {
+  post {
         always {
-            archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true
-            junit 'reports/**/*.xml'
-        }
-        failure {
-            echo "One or more tests failed! Check logs for details."
+            stage('Generate Allure Reports') {
+                steps {
+                    allure includeProperties: false, jdk: '', results: [
+                        [path: 'allure-results/frontend'],
+                        [path: 'allure-results/backend']
+                    ]
+                }
+            }
         }
     }
 }

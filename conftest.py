@@ -1,3 +1,5 @@
+import tempfile
+
 import allure
 import pytest
 from selenium import webdriver
@@ -77,6 +79,8 @@ def browser(request):
     if remote:
         if browser_name == "chrome":
             options = ChromeOptions()
+            unique_dir = tempfile.mkdtemp()
+            options.add_argument(f"--user-data-dir={unique_dir}")
         elif browser_name == "firefox":
             options = FirefoxOptions()
         elif browser_name == "edge":
@@ -109,6 +113,10 @@ def browser(request):
     else:
         if browser_name == "chrome":
             options = ChromeOptions()
+            options.add_argument("--no-sandbox")
+            # Provide a unique data dir
+            unique_dir = tempfile.mkdtemp()
+            options.add_argument(f"--user-data-dir={unique_dir}")
             options.add_argument("--no-sandbox")
             # options.add_argument("--headless")
             options.add_argument("--disable-dev-shm-usage")

@@ -15,4 +15,10 @@ RUN apt-get update && apt-get install -y \
     netcat-openbsd  \
     && apt-get clean
 
+
+COPY requirements.txt /tmp/requirements.txt
+
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install --break-system-packages -r /tmp/requirements.txt
+
 USER jenkins

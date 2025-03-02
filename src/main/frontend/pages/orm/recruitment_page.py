@@ -40,7 +40,10 @@ class RecruitmentPage(BasePage):
     @allure.step("Clicking recruitment section")
     def click_recruitment(self):
         try:
+            self.browser.refresh()
             self.wait_for_element(self.RECRUITMENT).click()
+            self.wait_for_element(self.RECRUITMENT).click()
+            self.browser.refresh()
         except NoSuchElementException as e:
             print(f"Error when trying to click the recruitment button: {e}")
         return self

@@ -64,11 +64,9 @@ pipeline {
                     echo "Threads: $threads"
 
                     python3 -m pytest --browser=$browser \
-                                      --selenium_url=$executor \
-                                      --base_url=$app_url \
                                       --junit-xml=reports/junit.xml \
                                       --alluredir=allure-results \
-                                      src/tests/frontend/pages/test_pim.py
+                                      src/tests/frontend
                     """
                 }
             }

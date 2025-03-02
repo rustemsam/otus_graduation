@@ -62,13 +62,22 @@ class BasePage:
     def get_items_elements(self, xpath_locator: str) -> List[str]:
         """
         Retrieves and returns a list of non-empty text strings from all elements matching the given XPath locator.
+        Handles individual element errors gracefully.
         """
+        texts = []
         try:
             elements = self.browser.find_elements(By.XPATH, xpath_locator)
             self.logger.info(
                 f"Found {len(elements)} items matching locator '{xpath_locator}'."
             )
-            return [el.text.strip() for el in elements if el.text.strip()]
+            for el in elements:
+                try:
+                    text = el.text.strip()
+                    if text:
+                        texts.append(text)
+                except Exception as e:
+                    self.logger.error(f"Error retrieving text from element: {e}")
+            return texts
         except (NoSuchElementException, StaleElementReferenceException) as e:
             self.logger.error(f"No available text from elements '{xpath_locator}': {e}")
             return []

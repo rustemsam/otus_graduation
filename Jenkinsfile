@@ -63,9 +63,7 @@ pipeline {
                     echo "Browser Version: $browser_version"
                     echo "Threads: $threads"
 
-                    python3 -m pytest --browser=$browser \
-                                      --junit-xml=reports/junit.xml \
-                                      --alluredir=allure-results \
+                    python3 -m pytest --alluredir=allure-results \
                                       src/tests/frontend
                     """
                 }

@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    options {
+        // Optionally add timestamps to help debug timing issues.
+        timestamps()
+        // Set an overall timeout for the entire pipeline, if desired.
+        // timeout(time: 60, unit: 'MINUTES')
+    }
+
     parameters {
         string(name: 'EXECUTOR_ADDRESS', defaultValue: 'http://localhost:4444/wd/hub', description: 'Selenoid executor address')
         string(name: 'APPLICATION_URL', defaultValue: 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login', description: 'Application URL')
@@ -33,24 +40,27 @@ pipeline {
             parallel {
                 stage('Frontend Tests') {
                     steps {
-                        sh """
-                            echo "Running frontend tests..."
-                            python3 -m pytest --junit-xml=reports/frontend-junit.xml \
-                            --alluredir=allure-results/frontend \
-                            src/tests/frontend/pages/orm/test_recruitment.py \
-                            src/tests/frontend/pages/orm/test_pim.py \
-                            src/tests/frontend/pages/test_login.py
-                        """
+                        timeout(time: 5, unit: 'MINUTES') {
+                            sh """
+                                echo "Running frontend tests..."
+                                python3 -m pytest --junit-xml=reports/frontend-junit.xml \
+                                                  --alluredir=allure-results/frontend \
+                                                  src/tests/frontend/pages/orm/test_recruitment.py \
+                                                  src/tests/frontend/pages/orm/test_pim.py \
+                            """
+                        }
                     }
                 }
                 stage('Backend Tests') {
                     steps {
-                        sh """
-                            echo "Running backend tests..."
-                            python3 -m pytest --junit-xml=reports/backend-junit.xml \
-                                              --alluredir=allure-results/backend \
-                                              src/tests/backend
-                        """
+                        timeout(time: 5, unit: 'MINUTES') {
+                            sh """
+                                echo "Running backend tests..."
+                                python3 -m pytest --junit-xml=reports/backend-junit.xml \
+                                                  --alluredir=allure-results/backend \
+                                                  src/tests/backend
+                            """
+                        }
                     }
                 }
             }

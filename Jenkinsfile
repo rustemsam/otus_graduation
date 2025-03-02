@@ -56,7 +56,7 @@ pipeline {
                                        --vnc \\
                                        --selenium_url=${selenoidUrl} \\
                                        --alluredir=allure-results/frontend \\
-                                       src/tests/frontend/pages/test_pim.py
+                                       src/tests/frontend/pages/
                     """
                 }
             }

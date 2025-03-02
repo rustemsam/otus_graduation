@@ -3,7 +3,7 @@ pipeline {
 
     options {
         timestamps()
-         timeout(time: 10, unit: 'MINUTES')
+        timeout(time: 10, unit: 'MINUTES')
     }
 
     parameters {
@@ -40,13 +40,13 @@ pipeline {
                     sh """
                         echo "Running backend tests..."
                         python3 -m pytest --junit-xml=reports/backend-junit.xml \
-                                          --alluredir=allure-results/backend \
+                                          --alluredir=alluredir-results/backend \
                                           src/tests/backend
                     """
                 }
             }
         }
-       stage('Run Tests') {
+        stage('Run Tests') {
             steps {
                 script {
                     def executor = params.EXECUTOR_ADDRESS
@@ -65,7 +65,7 @@ pipeline {
 
                     python3 -m pytest --alluredir=allure-results \
                                       src/tests/frontend/pages/test_pim.py \
-                                      src/tests/frontend/pages/test_login.py \
+                                      src/tests/frontend/pages/test_login.py
                     """
                 }
             }
@@ -73,22 +73,20 @@ pipeline {
         stage('Generate Allure Reports') {
             steps {
                 allure includeProperties: false, jdk: '', results: [
-                    [path: 'allure-results/frontend'],
-                    [path: 'allure-results/backend']
+                    [path: 'alluredir-results/frontend'],
+                    [path: 'alluredir-results/backend']
                 ]
             }
         }
     }
-  post {
+    post {
         always {
-            stage('Generate Allure Reports') {
-                steps {
-                    allure includeProperties: false, jdk: '', results: [
-                        [path: 'allure-results/frontend'],
-                        [path: 'allure-results/backend']
-                    ]
-                }
-            }
+
+            allure includeProperties: false, jdk: '', results: [
+                [path: 'alluredir-results/frontend'],
+                [path: 'alluredir-results/backend']
+            ]
+            echo "Post actions executed."
         }
     }
 }

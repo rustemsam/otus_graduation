@@ -53,10 +53,6 @@ pipeline {
                     echo "Threads: ${threads}"
 
                     python3 -m pytest --browser=${browser} \
-                                        --remote \
-                                        --selenium_url=${selenoidUrl} \
-                                        --base_url=${appUrl} \
-                                        --vnc \
                                         --alluredir=allure-results \
                                         src/tests/frontend/pages/test_pim.py \
                                         src/tests/frontend/pages/test_login.py

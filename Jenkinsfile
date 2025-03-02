@@ -55,7 +55,6 @@ pipeline {
                                        --remote \\
                                        --vnc \\
                                        --selenium_url=${selenoidUrl} \\
-                                       --base_url=${appUrl} \\
                                        --alluredir=allure-results/frontend \\
                                        src/tests/frontend/pages/test_pim.py
                     """

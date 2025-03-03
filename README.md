@@ -44,7 +44,7 @@ Before running the tests, ensure you have the following:
 1. **Clone the repository:**
 
 ```bash
-   git clone <repository_url>
+   git clone https://github.com/rustemsam/otus_graduation
 ```
 
 2. Navigate to the project directory:

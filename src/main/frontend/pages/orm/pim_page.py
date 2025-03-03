@@ -35,8 +35,7 @@ class PimPage(BasePage):
             self.wait_for_element(self.PIM, 3).click()
             self.browser.refresh()
         except NoSuchElementException as e:
-            print(f"Error when trying to click the pim button: {e}")
-            self.logger.error(f"Click on PIM failed: {e}")
+            self.logger.warning(f"Error when trying to click the pim button: {e}")
             screenshot_path = f"error_screenshot_{int(time.time())}.png"
             self.browser.save_screenshot(screenshot_path)
             self.logger.info(f"Screenshot saved to {screenshot_path}")
@@ -51,7 +50,7 @@ class PimPage(BasePage):
             ).click()
             self.wait_for_element(employment_status).click()
         except NoSuchElementException as e:
-            print(f"Error when trying to click the employment status button: {e}")
+            self.logger.warning(f"Error when trying to click the employment status button: {e}")
         return self
 
     @allure.step("Clicking search button")
@@ -59,7 +58,7 @@ class PimPage(BasePage):
         try:
             self.wait_for_element(self.SEARCH_BUTTON).click()
         except NoSuchElementException as e:
-            print(f"Error when trying to click search button: {e}")
+            self.logger.warning(f"Error when trying to click search button: {e}")
         return self
 
     @allure.step("Clicking add button")
@@ -67,7 +66,7 @@ class PimPage(BasePage):
         try:
             self.wait_for_element(self.ADD_BUTTON).click()
         except NoSuchElementException as e:
-            print(f"Error when trying to click add button: {e}")
+            self.logger.warning(f"Error when trying to click add button: {e}")
         return self
 
     @allure.step("Clicking create login details button")
@@ -75,7 +74,7 @@ class PimPage(BasePage):
         try:
             self.wait_for_element(self.CREATE_LOGIN_DETAILS_BUTTON).click()
         except NoSuchElementException as e:
-            print(f"Error when trying to click add button: {e}")
+            self.logger.warning(f"Error when trying to click add button: {e}")
         return self
 
     @allure.step(
@@ -97,7 +96,7 @@ class PimPage(BasePage):
             input_confirm_password.clear()
             input_confirm_password.send_keys(confirm_password)
         except NoSuchElementException as e:
-            print(f"Error when trying to fill login details: {e}")
+            self.logger.warning(f"Error when trying to fill login details: {e}")
         return self
 
     @allure.step("Get list of available pim records")
@@ -130,4 +129,4 @@ class PimPage(BasePage):
             application_stage = self.wait_for_element(self.PIM_PERSONAL_TITLE)
             return application_stage.text
         except NoSuchElementException:
-            self.logger.info("PIM title did not appear within the timeout period.")
+            self.logger.warning("PIM title did not appear within the timeout period.")

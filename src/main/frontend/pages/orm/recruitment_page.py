@@ -45,7 +45,7 @@ class RecruitmentPage(BasePage):
             self.wait_for_element(self.RECRUITMENT).click()
             self.browser.refresh()
         except NoSuchElementException as e:
-            print(f"Error when trying to click the recruitment button: {e}")
+            self.logger.warning(f"Error when trying to click the recruitment button: {e}")
         return self
 
     @allure.step("Clicking add candidate")
@@ -53,7 +53,7 @@ class RecruitmentPage(BasePage):
         try:
             self.wait_for_element(self.ADD_CANDIDATE_BUTTON).click()
         except NoSuchElementException as e:
-            print(f"Error when trying to click the add candidate button: {e}")
+            self.logger.warning(f"Error when trying to click the add candidate button: {e}")
         return self
 
     @allure.step("Clicking select candidate")
@@ -65,7 +65,7 @@ class RecruitmentPage(BasePage):
             self.wait_for_element_to_be_clickable(self.VACANCY_SELECTOR).click()
             self.wait_for_element(vacancy_input).click()
         except NoSuchElementException as e:
-            print(f"Error when trying to click the add candidate button: {e}")
+            self.logger.warning(f"Error when trying to click the add candidate button: {e}")
         return self
 
     @allure.step("Filling application date '{application_date}'")
@@ -86,7 +86,7 @@ class RecruitmentPage(BasePage):
             input_application_date.send_keys(application_date)
 
         except NoSuchElementException as e:
-            print(f"Error when trying to fill application date: {e}")
+            self.logger.warning(f"Error when trying to fill application date: {e}")
 
         return self
 
@@ -95,7 +95,7 @@ class RecruitmentPage(BasePage):
         try:
             self.wait_for_element(self.CONSENT_CHECKBOX).click()
         except NoSuchElementException as e:
-            print(f"Error when trying to click consent checkbox: {e}")
+            self.logger.warning(f"Error when trying to click consent checkbox: {e}")
         return self
 
     @allure.step("Getting application stage title")

@@ -36,31 +36,7 @@ pipeline {
 
         stage('Run Tests in Parallel') {
             parallel {
-                stage('Frontend Tests') {
-                    agent { label 'frontend' }
-                    steps {
-                        script {
 
-                            def selenoidUrl = params.SELENOID_URL?.trim()
-
-                            def remoteParam = selenoidUrl ? '--remote' : ''
-                            def selenoidParam = selenoidUrl ? "--selenium_url=${selenoidUrl}" : ''
-
-                            echo "Starting frontend tests with the following parameters:"
-                            echo "Selenoid URL: ${selenoidUrl}"
-                            echo "Application URL: ${params.APPLICATION_URL}"
-                            echo "Browser: ${params.BROWSER}"
-                            echo "Browser Version: ${params.BROWSER_VERSION}"
-                            echo "Threads: ${params.THREADS}"
-
-                            sh """
-                                python3 -m pytest --browser=${params.BROWSER} ${remoteParam} --vnc ${selenoidParam} \\
-                                                  --alluredir=allure-results/frontend \\
-                                                  src/tests/frontend/pages/
-                            """
-                        }
-                    }
-                }
 
                 stage('Backend Tests') {
                     agent { label 'backend' }

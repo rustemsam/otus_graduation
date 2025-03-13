@@ -65,13 +65,15 @@ pipeline {
         }
     }
 
-    post {
-        always {
+  post {
+    always {
+        node('any') {
             archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true
             junit 'reports/**/*.xml'
         }
-        failure {
-            echo "Build failed! Check logs for errors."
-        }
+    }
+    failure {
+        echo "Build failed! Check logs for errors."
+    }
     }
 }

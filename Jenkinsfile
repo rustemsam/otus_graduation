@@ -40,20 +40,23 @@ pipeline {
                     agent { label 'frontend' }
                     steps {
                         script {
-                            sh """
+
+                            def selenoidUrl = params.SELENOID_URL?.trim()
+
+                            def remoteParam = selenoidUrl ? '--remote' : ''
+                            def selenoidParam = selenoidUrl ? "--selenium_url=${selenoidUrl}" : ''
+
                             echo "Starting frontend tests with the following parameters:"
-                            echo "Selenoid URL: ${params.SELENOID_URL}"
+                            echo "Selenoid URL: ${selenoidUrl}"
                             echo "Application URL: ${params.APPLICATION_URL}"
                             echo "Browser: ${params.BROWSER}"
                             echo "Browser Version: ${params.BROWSER_VERSION}"
                             echo "Threads: ${params.THREADS}"
 
-                            python3 -m pytest --browser=${params.BROWSER} \\
-                                              --remote \\
-                                              --vnc \\
-                                              --selenium_url=${params.SELENOID_URL} \\
-                                              --alluredir=allure-results/frontend \\
-                                              src/tests/frontend/pages/
+                            sh """
+                                python3 -m pytest --browser=${params.BROWSER} ${remoteParam} --vnc ${selenoidParam} \\
+                                                  --alluredir=allure-results/frontend \\
+                                                  src/tests/frontend/pages/
                             """
                         }
                     }

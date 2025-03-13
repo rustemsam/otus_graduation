@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     options {
         timestamps()
@@ -15,17 +15,16 @@ pipeline {
     }
 
     stages {
-        stage('Clean Workspace') {
+        stage('Checkout Code') {
+            agent any
             steps {
                 deleteDir()
-            }
-        }
-        stage('Checkout Code') {
-            steps {
                 git branch: 'main', url: 'https://github.com/rustemsam/otus_graduation'
             }
         }
+
         stage('Install Dependencies') {
+            agent any
             steps {
                 sh '''
                     echo "Installing dependencies..."
@@ -34,46 +33,50 @@ pipeline {
                 '''
             }
         }
-        stage('Run Frontend Tests') {
-            steps {
-                script {
-                    def selenoidUrl = params.SELENOID_URL
-                    def appUrl = params.APPLICATION_URL
-                    def browser = params.BROWSER
-                    def browserVersion = params.BROWSER_VERSION
-                    def threads = params.THREADS
 
-                    sh """
-                    echo "Starting frontend tests with the following parameters:"
-                    echo "Selenoid URL: ${selenoidUrl}"
-                    echo "Application URL: ${appUrl}"
-                    echo "Browser: ${browser}"
-                    echo "Browser Version: ${browserVersion}"
-                    echo "Threads: ${threads}"
+        stage('Run Tests in Parallel') {
+            parallel {
+                stage('Frontend Tests') {
+                    agent { label 'frontend' }
+                    steps {
+                        script {
+                            sh """
+                            echo "Starting frontend tests with the following parameters:"
+                            echo "Selenoid URL: ${params.SELENOID_URL}"
+                            echo "Application URL: ${params.APPLICATION_URL}"
+                            echo "Browser: ${params.BROWSER}"
+                            echo "Browser Version: ${params.BROWSER_VERSION}"
+                            echo "Threads: ${params.THREADS}"
 
-                    python3 -m pytest --browser=${browser} \\
-                                       --remote \\
-                                       --vnc \\
-                                       --selenium_url=${selenoidUrl} \\
-                                       --alluredir=allure-results/frontend \\
-                                       src/tests/frontend/pages/
-                    """
+                            python3 -m pytest --browser=${params.BROWSER} \\
+                                              --remote \\
+                                              --vnc \\
+                                              --selenium_url=${params.SELENOID_URL} \\
+                                              --alluredir=allure-results/frontend \\
+                                              src/tests/frontend/pages/
+                            """
+                        }
+                    }
+                }
+
+                stage('Backend Tests') {
+                    agent { label 'backend' }
+                    steps {
+                        timeout(time: 5, unit: 'MINUTES') {
+                            sh """
+                                echo "Running backend tests..."
+                                python3 -m pytest --junit-xml=reports/backend-junit.xml \\
+                                                  --alluredir=allure-results/backend \\
+                                                  src/tests/backend
+                            """
+                        }
+                    }
                 }
             }
         }
-        stage('Run Backend Tests') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    sh """
-                        echo "Running backend tests..."
-                        python3 -m pytest --junit-xml=reports/backend-junit.xml \\
-                                          --alluredir=allure-results/backend \\
-                                          src/tests/backend
-                    """
-                }
-            }
-        }
+
         stage('Generate Allure Reports') {
+            agent any
             steps {
                 allure includeProperties: false, jdk: '', results: [
                     [path: 'allure-results/frontend'],
@@ -82,6 +85,7 @@ pipeline {
             }
         }
     }
+
     post {
         always {
             archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true

@@ -52,6 +52,7 @@ pipeline {
                                                   --alluredir=allure-results/backend \
                                                   src/tests/backend
                             '''
+                            stash name: 'allure-results-backend', includes: 'allure-results/backend/**'
                         }
                     }
                 }
@@ -62,6 +63,7 @@ pipeline {
         stage('Generate Allure Reports') {
             agent any
             steps {
+                unstash 'allure-results-backend'
                 allure includeProperties: false, jdk: '', results: [
                     [path: 'allure-results/frontend'],
                     [path: 'allure-results/backend']

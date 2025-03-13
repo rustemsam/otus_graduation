@@ -72,7 +72,7 @@ pipeline {
 
     post {
         always {
-            node('any') {
+            node('NewTest') {
                 archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true
                 junit 'reports/**/*.xml'
             }

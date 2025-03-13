@@ -44,7 +44,7 @@ pipeline {
                             git branch: 'main', url: 'https://github.com/rustemsam/otus_graduation'
                             sh '''
                                 echo "Installing dependencies on backend node..."
-                                pip install -r requirements.txt --break-system-packages
+                                 python3 -m pip install -r requirements.txt --break-system-packages
                             '''
                             sh '''
                                 echo "Running backend tests..."

@@ -35,26 +35,26 @@ pipeline {
         }
 
         stage('Run Tests in Parallel') {
-
-
+            parallel {
                 stage('Backend Tests') {
                     agent { label 'backend' }
                     steps {
                         timeout(time: 5, unit: 'MINUTES') {
                             deleteDir()
                             git branch: 'main', url: 'https://github.com/rustemsam/otus_graduation'
-                            sh """
+                            sh '''
                                 echo "Installing dependencies on backend node..."
                                 pip install -r requirements.txt --break-system-packages
-                            """
-                            sh """
+                            '''
+                            sh '''
                                 echo "Running backend tests..."
-                                python3 -m pytest --junit-xml=reports/backend-junit.xml \\
-                                                  --alluredir=allure-results/backend \\
+                                python3 -m pytest --junit-xml=reports/backend-junit.xml \
+                                                  --alluredir=allure-results/backend \
                                                   src/tests/backend
-                            """
+                            '''
                         }
                     }
+                }
 
             }
         }
@@ -70,15 +70,15 @@ pipeline {
         }
     }
 
-  post {
-    always {
-        node {
-            archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true
-            junit 'reports/**/*.xml'
+    post {
+        always {
+            node('any') {
+                archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true
+                junit 'reports/**/*.xml'
+            }
         }
-    }
-    failure {
-        echo "Build failed! Check logs for errors."
-    }
+        failure {
+            echo "Build failed! Check logs for errors."
+        }
     }
 }

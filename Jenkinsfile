@@ -37,11 +37,16 @@ pipeline {
         stage('Run Tests in Parallel') {
             parallel {
 
-
                 stage('Backend Tests') {
                     agent { label 'backend' }
                     steps {
                         timeout(time: 5, unit: 'MINUTES') {
+                            deleteDir()
+                            git branch: 'main', url: 'https://github.com/rustemsam/otus_graduation'
+                            sh """
+                                echo "Installing dependencies on backend node..."
+                                pip install -r requirements.txt --break-system-packages
+                            """
                             sh """
                                 echo "Running backend tests..."
                                 python3 -m pytest --junit-xml=reports/backend-junit.xml \\

@@ -35,7 +35,7 @@ pipeline {
         }
 
         stage('Run Tests in Parallel') {
-            parallel {
+
 
                 stage('Backend Tests') {
                     agent { label 'backend' }
@@ -55,7 +55,7 @@ pipeline {
                             """
                         }
                     }
-                }
+
             }
         }
 
@@ -72,7 +72,7 @@ pipeline {
 
   post {
     always {
-        node('any') {
+        node {
             archiveArtifacts artifacts: 'reports/**/*.xml', fingerprint: true
             junit 'reports/**/*.xml'
         }
